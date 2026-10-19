@@ -1,8 +1,8 @@
 'use strict';
-const $ = id => document.getElementById(id); let source = null, result = null, busy = false;
+const $ = id => document.getElementById(id); let source = null, result = null, busy = false, sampleLoaded = false;
 function reset(message) { result = null; $('preview').textContent = ''; $('ack').checked = false; $('ack').disabled = true; $('save').disabled = true; $('status').textContent = message; }
-$('file').addEventListener('change', () => { source = $('file').files[0] || null; reset(source ? source.name + ' selected. Inspect to continue.' : 'No file selected.'); });
-$('sample').addEventListener('click', () => { source = new File(['id;name;name\n00123;Ada;Ops\n00124;Bea;Support\n'], 'fictional-sample.csv'); $('delimiter').value = ';'; reset('Fictional sample loaded. Inspect to continue.'); });
+$('file').addEventListener('change', () => { if (sampleLoaded) { $('delimiter').value = 'auto'; sampleLoaded = false; } source = $('file').files[0] || null; reset(source ? source.name + ' selected. Inspect to continue.' : 'No file selected.'); });
+$('sample').addEventListener('click', () => { source = new File(['id;name;name\n00123;Ada;Ops\n00124;Bea;Support\n'], 'fictional-sample.csv'); $('delimiter').value = ';'; sampleLoaded = true; reset('Fictional sample loaded. Inspect to continue.'); });
 ['delimiter','rename'].forEach(id => $(id).addEventListener('change', () => reset('Options changed. Inspect again.')));
 $('form').addEventListener('submit', async event => {
   event.preventDefault(); if (busy) return; reset('Inspecting…');

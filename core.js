@@ -146,8 +146,17 @@
   }
   function process(bytes, options = {}) {
     const decoded = decode(bytes, options.encoding || 'auto');
-    const detection = options.delimiter && options.delimiter !== 'auto' ? { delimiter: options.delimiter, uncertain: false, reason: '' } : detect(decoded.text);
+    const explicit = options.delimiter && options.delimiter !== 'auto';
+    const detection = explicit ? { delimiter: options.delimiter, uncertain: false, reason: '' } : detect(decoded.text);
     const before = parse(decoded.text, detection.delimiter), input = inspect(before, options.header !== false);
+    if (explicit && before.length && before.every(row => row.length <= 1)) {
+      // A chosen separator that never splits a record usually means the wrong separator.
+      const guess = detect(decoded.text);
+      if (guess.delimiter !== detection.delimiter && !guess.uncertain) {
+        const label = d => d === '\t' ? 'Tab' : '"' + d + '"';
+        throw new Error('Separator is set to ' + label(detection.delimiter) + ', so every record would be one column, but this file looks ' + label(guess.delimiter) + '-separated. Set the source separator to Detect or ' + label(guess.delimiter) + ' and inspect again.');
+      }
+    }
     const result = transform(before, options), output = serialize(result.rows, options.output || ',', !!options.bom);
     return { before, rows: result.rows, output, report: { version: '1.0.0', encoding: decoded.encoding, inputBOM: decoded.bom, sourceDelimiter: detection.delimiter, delimiterWarning: detection.reason, options: { ...options }, input, result: { records: result.rows.length }, changes: result.changes } };
   }
