@@ -9,3 +9,7 @@ Supports comma, semicolon, tab and pipe, quoted multiline cells, UTF-8 and BOM-m
 Limits: one file up to 5 MiB, 100,000 records, 200 columns and 500,000 cells. Preview shows only the first ten records. Invalid files are rejected. Formula-like values are flagged but exported unchanged. CSV has no spreadsheet type metadata: import IDs as Text in the receiver. This is not a security guarantee or a full spreadsheet editor.
 
 Tested in Chrome 150 on Linux. The demonstration is free; this repository has no payment collection, user accounts, server processing or analytics. Samples are fictional. See LICENSE.txt for reuse rights.
+
+## The full tool
+
+CSV Desk is the paid offline batch version: clean whole folders of CSV files with a change report, no uploads. $29, one time: https://payhip.com/b/WNTKh
